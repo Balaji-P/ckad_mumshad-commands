@@ -1,0 +1,25 @@
+1. Replication controller helps running multiple instance of Pods, thus providing high availability
+2. It helps bringing up new pods when the old ones dies 
+3. Replication Controller maintians the number of Pods across the clusters , meaning pods can be 
+dristributed across Nodes.
+4. Replication Controller is replaced by Replica Set in newer technology.
+
+Selector is a required filed in ReplicaSet 
+ -> It asks for the labels of pod
+ -> template section gives the details of pod but still why Selector section need to provide the details of Pod
+     --> So that if the pods are not created ReplicaSet can create pods from the template
+ -> It provides more label based searching not provided in Replication Controller
+
+kubectl create -f replicaset-defintion.yml 
+kubectl get replicaset
+kubectl delete replicaset <replicaset-name> // deletes the underlying pods as well 
+
+
+Commands for updating a replicaset
+
+kubectl replace -f replicaset-defintion.yml  OR
+kubectl scale --replicas=6 -f replicaset-defintion.yml OR 
+kubectl scale --replicas=6 replicaset <replicaset-name>
+
+You can also scale replicaset based on load (advanced topic)
+
