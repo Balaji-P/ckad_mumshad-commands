@@ -1,0 +1,16 @@
+kubectl run nginx --image=nginx --> creates a pod nginx with image , quick way for creating a pod
+kubectl get pods -o yaml/json  ---> prints all the pods defintions in yaml or json dedpending upon input
+
+kubectl describe pod newpods-  --> the name "newpods-" works as a regex matcher as well , it will match all the pods 
+                                with name "newpods-*" like newpods-1 , newpods-2ws ..etc 
+
+kubect get pods , READY Colums shows  (# of containers running) / (# of containers in the Pod ) 
+
+kubect edit pod redis --> to edit the pod configuration of pod named redis
+
+kubectl get pods -o wide ## gives more detailed information (like nodes, ips  etc )
+
+## quick way of dry running a  pods with an image , below command wont run the pod
+kubectl run redis --image=redis --dry-run=client -o yaml > pod.yaml 
+
+# you can extract a pod defintion file via :- kubectl get pod <pod-name> -o yaml > pod-defintion.yaml

@@ -1,0 +1,18 @@
+# kubectl get pods
+# kubectl create -f pod-definition.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+    - name: nginx-containers
+      image: nginx 
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m" # 500 mili cpu's or milli cores that's how they are read 
+      ports:
+        - containerPort: 8080
