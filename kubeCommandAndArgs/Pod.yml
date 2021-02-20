@@ -1,0 +1,18 @@
+##  command in Pod.yml overwrites the command in  docker File ENTRYPOINT 
+##  args in Pod.yml overwrites the CMD in docker File
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: sample-pod
+spec:
+  containers:
+    - name: name
+      image: image
+      command:               ## Or command: ["sleep2.0"]
+        - "sleep2.0"         ##
+      args:                  ##  args: ["10"]
+        - "10"               ##
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m" # 500 mili cpu's or milli cores that's how they are read 
