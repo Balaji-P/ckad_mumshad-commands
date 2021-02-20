@@ -1,0 +1,33 @@
+K8s deployments Features
+    Used for controlled deployments of Services.
+    Sometimes you may want to pause the environment and make multiple changes and rollout changes together 
+    Roll Up and Roll back changes 
+        Scaling environment
+        Updating webserver version 
+        modifying resouce allocation etc.
+
+deployment creates a replicaset itself which in turn creates pods
+
+kubectl get all ## gets all the k8s objects created under deployments, replicaset, pods, service ..etc 
+
+How to create deployment in commandline 
+
+kubectl get deployments --no-headers  // prints data without column headers 
+kubectl create deployment <name> --image=<image-name>
+add more replica to deployment
+kubectl scale --replicas=<#> deployment <deployment-name> OR
+Generate Deployment with 4 Replicas
+kubectl create deployment nginx --image=nginx --replicas=4
+
+// Shortcut to get yaml defintion for any k8s resource and edit it to create deployments
+kubectl create namespace test-123 --dry-run -o json
+{
+    "kind": "Namespace",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "test-123",
+        "creationTimestamp": null
+    },
+    "spec": {},
+    "status": {}
+}

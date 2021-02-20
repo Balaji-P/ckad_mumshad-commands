@@ -1,0 +1,50 @@
+Create a Service named redis-service of type ClusterIP to expose pod redis on port 6379
+
+kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml
+(This will automatically use the pod's labels as selectors)
+
+OR
+
+kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml
+(This will not use the pods labels as selectors, instead it will assume selectors as app=redis.
+ You cannot pass in selectors as an option. So it does not work very well if your pod has a different label set.)
+
+--------
+
+Create a Service named nginx of type NodePort to expose pod nginx's port 80 on port 30080 on the nodes:
+
+kubectl expose pod nginx --port=80 --name nginx-service --type=NodePort --dry-run=client -o yaml
+
+(This will automatically use the pod's labels as selectors, but you cannot specify the node port. 
+You have to generate a definition file and then 
+add the node port in manually before creating the service with the pod.)
+
+Or
+
+kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=client -o yaml
+
+(This will not use the pods labels as selectors)
+
+use --no-headers  kubectl get services --no-headers
+
+Trying to reach service in different Namespace <service-name>.<namespace-of-service>.svc.cluster.local
+
+
+
+Kubernetes ServiceTypes allow you to specify what kind of Service you want. The default is ClusterIP.
+
+Type values and their behaviors are:
+
+1. ClusterIP: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. This is the default ServiceType.
+2. NodePort: Exposes the Service on each Node's IP at a static port (the NodePort). A ClusterIP Service, to which the NodePort Service routes, is automatically created. You'll be able to contact the NodePort Service, from outside the cluster, by requesting <NodeIP>:<NodePort>.
+3. LoadBalancer: Exposes the Service externally using a cloud provider's load balancer. NodePort and ClusterIP Services, to which the external load balancer routes, are automatically created.
+4. ExternalName: Maps the Service to the contents of the externalName field (e.g. foo.bar.example.com), by returning a CNAME record with its value. No proxying of any kind is set up.
+
+
+----------------------
+
+Create a pod called httpd using the image httpd:alpine in the default namespace. 
+Next, create a service of type ClusterIP by the same name (httpd). 
+The target port for the service should be 80
+
+kubectl run httpd --image=httpd:alpine --port=80 --expose

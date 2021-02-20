@@ -6,11 +6,50 @@ kubectl describe pod newpods-  --> the name "newpods-" works as a regex matcher 
 
 kubect get pods , READY Colums shows  (# of containers running) / (# of containers in the Pod ) 
 
+Creates pod nignx with image and label supplied 
+kubectl run nginx --image=nginx  -l <label_name>=<label_value> 
+OR
+kubectl run nginx --image=nginx  --labels=<label_name>=<label_value>
+
 kubect edit pod redis --> to edit the pod configuration of pod named redis
 
 kubectl get pods -o wide ## gives more detailed information (like nodes, ips  etc )
 
-## quick way of dry running a  pods with an image , below command wont run the pod
+## quick way of dry running a  pods with an image , below command wont create the pod
 kubectl run redis --image=redis --dry-run=client -o yaml > pod.yaml 
 
+ kubectl get pods  --no-headers  
+
+## deleting multiple pods with a label
+kubectl delete pod -l <label-name>=<label-value>
+
 # you can extract a pod defintion file via :- kubectl get pod <pod-name> -o yaml > pod-defintion.yaml
+
+Sample Pod yml
+----------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp-green
+  labels:
+      name: webapp-green
+spec:
+  containers:
+  - name: simple-webapp
+    image: kodekloud/webapp-color
+    command: ["python", "app.py"]
+    args: ["--color", "pink"]
+-------------------------------------------------
+
+Create a new pod called custom-nginx using the nginx image and expose it on container port 8080
+kubectl run custom-nginx --image=nginx --port=8080
+
+-------------
+
+Create a pod called httpd using the image httpd:alpine in the default namespace. 
+Next, create a service of type ClusterIP by the same name (httpd). 
+The target port for the service should be 80
+
+kubectl run httpd --image=httpd:alpine --port=80 --expose
+
+

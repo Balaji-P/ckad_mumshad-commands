@@ -1,0 +1,25 @@
+# Replica Set yaml -> different apiVersion
+apiVersion: apps/v1
+kind: Deplyment
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  minReadySeconds: 60
+  replicas: 2
+  selector: ## https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+   matchLabels:
+       type: front-end
+  template: ## Pod Definition
+    metadata:
+      name: myapp
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-containers
+          image: nginx
+

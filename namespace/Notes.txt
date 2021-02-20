@@ -1,0 +1,35 @@
+pods and services for internal purposes for running of k8s is in namespace kube-system at the time of cluster build 
+    networking solutin , dns service
+
+Each of K8s namespace can have its own set of policies that can define who can do what, assign quota or resources 
+to these namespaces 
+
+how to current context to some namespace to avoid passing namespace parameter
+
+kubectl config set-context $(kubectl config current-context) --namespace=dev 
+    -> kubectl get pods // gives pods in namespace dev 
+
+kubectl get pods --all-namespaces // to view pods in all namespaces
+
+To restrict namespace resources create a resouce quota
+
+kubectl get namespaces --no-headers | wc -l  
+OR
+kubect get ns --no-headers 
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+    name: compute-quota
+    namespace: dev
+spec:
+    hard:
+        pods: "10"
+        requests.cpu: "4"
+        requests.memory: 5gi
+        limits.cpu: "10"
+        limits.memory: "10Gi"
+
+
+
+ 

@@ -3,6 +3,8 @@
 3. Replication Controller maintians the number of Pods across the clusters , meaning pods can be 
 dristributed across Nodes.
 4. Replication Controller is replaced by Replica Set in newer technology.
+5. Apiversion for replicaset is apps/v1 where as for ReplicationController is v1
+
 
 Selector is a required filed in ReplicaSet 
  -> It asks for the labels of pod
@@ -12,8 +14,11 @@ Selector is a required filed in ReplicaSet
 
 kubectl create -f replicaset-defintion.yml 
 kubectl get replicaset
-kubectl delete replicaset <replicaset-name> // deletes the underlying pods as well 
 
+ kubectl get replicaset  --no-headers  
+kubectl delete replicaset <replicaset-name> // deletes the underlying pods as well 
+kubectl edit replicaset <ReplicaSet-name>
+kubectl describe replicaset <ReplicaSet-name>
 
 Commands for updating a replicaset
 
