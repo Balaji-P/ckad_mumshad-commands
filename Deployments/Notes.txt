@@ -18,6 +18,7 @@ add more replica to deployment
 kubectl scale --replicas=<#> deployment <deployment-name> OR
 Generate Deployment with 4 Replicas
 kubectl create deployment nginx --image=nginx --replicas=4
+kubectl edit deployment <deployment_name> --> Edit the fields and save the file
 
 // Shortcut to get yaml defintion for any k8s resource and edit it to create deployments
 kubectl create namespace test-123 --dry-run -o json

@@ -53,3 +53,8 @@ The target port for the service should be 80
 kubectl run httpd --image=httpd:alpine --port=80 --expose
 
 
+kubectl get pods, svc --> gives both pods and services 
+// kubectl get resource1 , resource2 , resource3 .....
+
+
+
