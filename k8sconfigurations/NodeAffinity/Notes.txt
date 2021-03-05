@@ -1,0 +1,43 @@
+
+kubectl get nodes node01 --show-labels
+
+NodeAffinity provides advanced capabiliies to limit Pod Placement on Specific Nodes 
+
+Below is example of NodeAffinity to Place pods on Large Nodes as shown in nodeSelector
+
+apiVersion: 
+kind: Pod
+metadata:
+    name: myapp-pod
+spec:
+  containers:
+  - name: data-processor
+    image: data-processor
+  affinity:
+    nodeAffinity:
+      requireDuringSchedulingIgnoreDuringExecution:
+         nodeSelectorTerms:
+         - matchExpressions:
+           - key: size
+             operator: In
+             values:
+             - Large 
+
+You can multiple values like Medium, Small 
+values
+- Large
+- Medium
+- Small
+
+operator can take other Values like "NotIn"  / "Exists" 
+
+The type of NodeAffinity affects the Scheduler behavior 
+
+1. requireDuringSchedulingIgnoreDuringExecution 
+2. preferredDuringSchedulingIgnoreDuringExecution 
+3. requiredDuringDchedulingRequiredDuringExecution 
+    --> Will be added in Future  both required means pod will be evicted 
+
+required is like compulsory Node Qualification and preferred is like try best fit Node 
+Ignored is like it wont afffect Pods once they are schedduled and lables on Nodes are changed
+

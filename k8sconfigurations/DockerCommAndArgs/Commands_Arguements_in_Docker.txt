@@ -1,0 +1,57 @@
+Commands in Docker
+
+docker run <image> --> runs an image
+docker ps --> running containers and their images 
+
+Containers exits when the task is complete and only lives as long as the process inside it alive 
+
+CMD is mostly used to define the default command to execute when a container is run
+This CMD can be overwritten by commandline arguement given to docker run 
+CMD ["<program_name>"]  --> Tells which program that needs to run inside the container
+Ex :- CMD["nignx"]  , CMD["mysqld"]
+
+docker run <image> [COMMAND]  // if COMMAND is given it overwrites the default command 
+ex:- docker run ubuntu sleep 5 
+
+How to slep 5 as default command --> 
+CMD sleep 5 
+OR
+CMD ["sleep","5"]  --> this is json array format 
+CMD ["command", "parameter"] 
+
+Commad line arguement compeltely replaces the  CMD in the DockerFile  ,
+so you need to pass both COMMAND and PARAM in commandline if image uses CMD
+
+
+IF you want to just provide  Arguement pass to default command use ENTRYPOINT 
+It just appends the param passed in the docker commandline to ENTRYPOINT
+----
+FROM ubuntu
+ENTRYPOINT ["sleep"]
+---
+
+For above image --> docker run <image> 10  // will sleep for 10 secs 
+
+How to have default param in case of no commandline param use format given below 
+----
+FROM ubuntu
+ENTRYPOINT ["sleep"]
+CMD ["5"]
+----
+
+How to overwrite command in ENTRYPOINT ? --entrypoint <command>
+Ex:-  docker run --entrypoint sleep2.0 <image> 10 
+
+------
+
+Running a Python app at Dcoker Startup , at Startup
+it will run  "python app.py --color red"
+---------------------------------------------
+FROM Python:3.6-alpine
+RUN pip install flask
+COPY . /opt/
+EXPOSE 8000
+WORKDIR /opt
+ENTRYPOINT ["python","app.py"]
+CMD ["--color", "red"]
+

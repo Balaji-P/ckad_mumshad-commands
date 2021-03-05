@@ -1,0 +1,33 @@
+
+// command ps aux -->  All the processes running 
+
+Docker by default runs the processes as root user within  the container AS WELL AS  THE HOST 
+  
+Docker conat can only see process running inside it 
+
+You can specfiy proccess to run as different user by specifying the userid  
+docker run --user=1000 ubuntu sleep 3600 
+
+OR Do the Above in DockerFile
+FROM ubuntu 
+USER 1000 
+
+The image created from above DockerFile will run any command with user Id 1000
+
+
+Ques 
+What happens when you run Docker Containers as root user , is root user withing the contianer same
+as the root user in the host ? Can proccess inside the container can do anything as root user inside  
+host system ?
+
+Docker implements security features that limit the capablites of root user within the container, like 
+BROADCAST, NET_ADMIN , SYS_ADMIN , MAC_ADMIN ... etc 
+
+You can  use " cap-add / cap-drop " options add privileges to root user in container 
+
+docker run  --cap-drop KILL ubuntu(image)  --> Drop KILL permission 
+docker run  --cap-drop MAC_ADMIN  ubuntu(image)  --> Add Mac admin  permission 
+
+To allow all privileges Use following command
+docker run --privilege ubuntu 
+

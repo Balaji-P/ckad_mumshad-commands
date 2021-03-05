@@ -1,0 +1,77 @@
+-> A pod when assigned to a node uses its resources 
+-> kubernetes-scheduler assings node to a pod post taking into consideration resource 
+req of pods and those available on nodes
+
+Default resource requirement for each pod?
+
+For the POD to pick up those defaults you must have first 
+set those as default values for request and limit by creating a LimitRange in that namespace.
+
+
+-----------------------------
+
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+    defaultRequest:
+      memory: 256Mi
+    type: Container
+
+------------------------------
+
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+spec:
+  limits:
+  - default:
+      cpu: 1
+    defaultRequest:
+      cpu: 0.5
+    type: Container
+-------------------------------------
+
+
+CPU -> 0.5 cpu , Mem -> 256 Mi ( as mebibytes)  , Disk 
+0.1 cpu --> 100m (m stands for milli)  lowest value allowed 1m 
+1 cpu --> 1 vcpu = 1 AWS vcpu = 1 GCP core = 1 Azure Core 
+
+
+
+Either specify in Mi / M  or actual Memory like  268435456
+1 Gi (Gibibyte ) --> 1073741824 bytes
+1 Mi (Mebibytes) --> 1048576 bytes 
+1 Ki (Kibibytes) --> 1024 bytes
+
+1 G (Gigabyte)   --> 1000 000 000 bytes
+1 M (Megabytes)  --> 1 000 000 bytes
+1 K (Kilobyte )  --> 1000 bytes 
+
+resource  has requests and limits section , and it to PodSection 
+
+in case of CPU limit is binding  and container is not allowed to throttle 
+but IN CASE OF MEMORY IT IS NOT BINDING , BUT IF IT HAPPENS CONSTANTLY PODS ARE TERMINATED   
+
+spec:
+    containers:
+    - name : name 
+      image : image
+      ports:
+        - containerPort: 8080
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: 1
+        limits:
+          memory: "2Gi"
+          cpu: 2
+
+How to remove taints? Notice -ve sign at end in below command 
+
+kubectl taint nodes controlplane node-role.kubernetes.io/master:NoSchedule-

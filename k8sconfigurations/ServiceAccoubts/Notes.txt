@@ -1,0 +1,48 @@
+Two types of account useraccount and serviceaccount 
+
+useraccount :- like Developer / Admin 
+
+serviceaccount :- Can be used by application / service 
+
+Create command -> kubectl create serviceaccount <acc_name>
+
+When a serviceaccount is created it creats a token as well 
+
+kubectl describe serviceaccount <acc_name>,
+
+serviceaccount token must be used by external application while authenticating to kube-api 
+
+
+Flow serviceaccount created ----> serviceaccount token created ---> 
+creation of secret to store serviceaccount token, this token can be used of basic auth while talking 
+to  kube-api 
+
+By default every pod uses default serviceaccount token and serviceaccount secret is mounted at 
+a vloume in pod , and as we know when a secret is mounted as a volume its content appear as a 
+file in the volume 
+
+kubectl exec -it <pod> ls /var/run/secrets/kubernetes.io.serviceaccount
+ca.crt namespace token  
+
+kubectl exec -it <pod> cat /var/run/secrets/kubernetes.io.serviceaccount/token
+somebase64encodedtoken
+
+InOrder to change serviceaccount in a deployment add serviceAccountName and automountServiceAccountToken
+in Pod template spec of the Deployment
+
+setting automountServiceAccountToken : false in Podsepc disables default mounting of serviceaccount secret in 
+Pod volume
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  template:
+    # Below is the podSpec.
+    metadata:
+      name: ...
+    spec:
+      serviceAccountName: <accountname>  ####
+      ...
+

@@ -1,0 +1,50 @@
+Taints and Tolerations are used to set restrictions on what pods can be scheduled on a node.
+
+If you require certain pods to be on specific  nodes use NODE AFFINITY. 
+
+SomeTimes we taint a node so that no  unwanted pod  is assigned on that node ,
+
+Othertimes we would want certain pods to be placed on this node , this time we specify only pods that
+are tolerant to this node and WE ADD Tolerations to the pod for the taint on the Node , 
+
+Taints and tolerations does not gaurantee that pod will be given to this node it can go to other nodes via 
+scheduler since it can be tolerant to other nodes as well .
+
+TAINTS are set on Nodes and Tolerations are set on Pods.
+
+Application pods are  not scheduled on master node becuase of taint
+
+kubectl describe node kubemaster | grep Taint 
+Taints:   node-role.kubernetes.io/master:NoSchedule
+
+
+kubectl taint nodes <node-name> key=value:<taint-effect> 
+For ex if you like to dedicate the node to pods in application blue , key=value becomes app=blue,
+
+There are three values that <taint-effect> can take :- 
+1. NoSchedule -> Pods will not be scheduled on the node 
+2. PreferNoSchedule --> Sytem will try to avoid pods on the node
+3. NoExecute --> New Pods will not be scheduled and existing ones will be evicted if can't tolerate taint 
+
+How to add Tolerations to Pod ?
+It is added in spec section of Pod defintion
+Notice Double quotes is compulsory 
+
+operator can take values like Equal Or Exists (Please verify )
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  tolerations:  ## Double quotes are compulsory 
+  - key: "app" 
+    operator: "Equal"   ## It can take values like Equal or Exists 
+    value: "blue" 
+    effect: "NoSchedule" 
+
+
+
