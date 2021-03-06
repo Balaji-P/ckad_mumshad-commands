@@ -1,0 +1,8 @@
+kubernetes doesnot come with full monitoring solutions 
+
+However there are various 3rd party solutions availbale 
+
+kubectl top node ## nodes mem cpu usage 
+
+kubectl top pod  ## pod mem cpu usage 
+

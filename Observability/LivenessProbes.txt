@@ -1,0 +1,31 @@
+If Container is Up so application is assumed to be up 
+this doesn't necessarily mean application is working as expected 
+
+Hence we use LivenessProbe in such cases 
+---> Periodic tests to check container is actuall healthy
+---> If fails container is destryed and restarted 
+
+It is upto app developer to decide what constitutes healthy
+
+LivenessProbe probe is added to Pod spec
+
+livenessProbe:
+  httpGet:
+    path: /api/healthy
+    port: 8080
+  initialDelaySeconds: 10 ## optional, just to give warm up time before probe 
+  periodSeconds: 5 ## optional , timedelay between successvie probes
+  failureThreshod: 8 ## No of attempts before Probe is stopped , default is 3 attempts
+
+
+livenessProbe:
+  tcpSocket:
+    port: 8080
+
+livenessProbe:
+  exec:
+    command:  ## array of cammands 
+    - cat 
+    - /app/is_healthy
+
+

@@ -1,0 +1,29 @@
+Do multicontainer Practise Exercie again
+
+Sometimes you need some containers to work together (scale up and down together)
+
+They share same namespace hence can refer to each other as localhost 
+Have Access to same Storage Volumes
+
+There are different patterns with multicontainer pods 
+--> Sidecar , Adapter , Ambassador 
+
+Sidecar Pattern Example -> Webserve container along with logging agent container
+
+Adapter Pattern Example -->
+Different Pods genrating different logging formats, use Adapter container to convet logs to same format before
+sending to Loggign server 
+
+Ambassador Pattern Example -->
+Application communicates to different database instances depending upon env (dev/test/prod)
+depending on env you need to modify connectiviy in application code , 
+this logic in code can be outsourced to seperate container in your pod , to which app container can refer
+to as localhost and can proxy the call depending on env.
+
+
+
+
+
+
+
+

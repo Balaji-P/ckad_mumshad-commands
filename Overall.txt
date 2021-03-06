@@ -1,0 +1,1 @@
+Kubect create -f .  ## Runs all the yamls in current directory 

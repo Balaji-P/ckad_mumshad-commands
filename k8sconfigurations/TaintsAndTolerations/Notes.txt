@@ -21,6 +21,11 @@ Taints:   node-role.kubernetes.io/master:NoSchedule
 kubectl taint nodes <node-name> key=value:<taint-effect> 
 For ex if you like to dedicate the node to pods in application blue , key=value becomes app=blue,
 
+How to remove taint 
+kubectl taint nodes <node-name> key=value:<taint-effect>- // Notice -ve sign in last 
+kubectl taint nodes node01 color=blue:NoSchedule-
+
+
 There are three values that <taint-effect> can take :- 
 1. NoSchedule -> Pods will not be scheduled on the node 
 2. PreferNoSchedule --> Sytem will try to avoid pods on the node

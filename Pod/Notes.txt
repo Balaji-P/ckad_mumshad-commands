@@ -1,4 +1,5 @@
 kubectl run nginx --image=nginx --> creates a pod nginx with image , quick way for creating a pod
+      // find out what --restart=<values>  does  
 kubectl get pods -o yaml/json  ---> prints all the pods defintions in yaml or json dedpending upon input
 
 kubectl describe pod newpods-  --> the name "newpods-" works as a regex matcher as well , it will match all the pods 
@@ -52,9 +53,8 @@ The target port for the service should be 80
 
 kubectl run httpd --image=httpd:alpine --port=80 --expose
 
-
 kubectl get pods, svc --> gives both pods and services 
 // kubectl get resource1 , resource2 , resource3 .....
 
-
+kubectl get pod <pod_name>  -o wide  // This gives more columns and detailed values in the column  
 

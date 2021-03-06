@@ -1,0 +1,41 @@
+Pod Conditions
+
+they complement Pod Status 
+It is an Array of true/false Values that tells state of Pods
+
+Some Pod Conditions --> PodScheduled , Initialized, ContainersReady, Ready
+
+Kubectl describe pod <name> | grep -A10 -i Conditions
+
+We need to tie the ready state to the actual  state of the application
+
+An App developer what makes an app ready , and use combination of following features to arrvie at conclusion
+These all together constitute readines Probes 
+1. Http Probes for Webserver
+2. Tcp socket listening in case of database
+3. Custom script in container which exits denoting that application is ready 
+
+In container spec add following --> Ready Condition is not set until Probe passes 
+
+readinessProbe:
+  httpGet:
+    path: /api/ready
+    port: 8080
+  initialDelaySeconds: 10 ## optional, just to give warm up time before probe 
+  periodSeconds: 5 ## optional , timedelay between successvie probes
+  failureThreshod: 8 ## No of attempts before Probe is stopped , default is 3 attempts
+
+readinessProbe:
+  tcpSocket:
+    port: 3306 
+
+readinessProbe:
+  exec:
+    command:
+      - cat               ##  This takes options in array format 
+      - /app/is_ready     ##
+
+
+These readiness Probe allow them to applied to application only if they are ready and hence
+allow smooth transition when pods are created / deleted 
+

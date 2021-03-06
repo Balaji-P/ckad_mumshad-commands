@@ -1,0 +1,41 @@
+--> labels are used for classification 
+--> selectors are used for filters 
+--> Annotations are used for INFORMATIVE purposes , like  details, name, version , emailId
+
+labels are added in metadata Section in a key value format
+labels:
+  app: App1
+  function: front-end
+
+How to Use selectors
+
+kubectl get pods --selector <key1>=<value1>,<key2>=<value2>
+
+kubectl get all --selector env=prod --no-headers  | wc -l
+
+kubectl get pods --selector env=prod,bu=finance,tier=frontend 
+
+kubernetes uses lables and selectors internally to connect different objects like ReplicaSet
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: myapp-rc
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  replicas: 3
+  selectors:
+    matachLabels:  ### Use of selectors to groups the pods 
+      app: App1   ## this label should match the label in Pod Spec template
+  template:
+    metadata:
+      name: myapp
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-containers
+          image: nginx
