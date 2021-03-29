@@ -1,1 +1,100 @@
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands  --> 
+To check for imperative commands 
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#expose  Exposing 
+
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-image-em- --> set image 
+
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run  --> run command 
+
 Kubect create -f .  ## Runs all the yamls in current directory 
+kubectl get all     ## all the objects in Default namespace
+
+Imperatively modify service attached to a deployment
+
+kubectl expose deployment smiple-webapp-deployment --name=webapp-service --target-port=8080 
+--type=NodePort --port=8080 --dry-run=client -o yaml > svc.yaml 
+## Exposing a deployment via creating a service
+
+then open svc.yaml to add "nodePort"
+
+kubectl create deployment <name> --image=<image-name> --dry-run=client -o yaml 
+kubectl scale --replicas=<#> deployment <deployment-name>  --dry-run=client -o yaml ##Generate Deployment with 4 Replicas
+kubectl create deployment nginx --image=nginx --replicas=4  --dry-run=client -o yaml  ## 
+
+
+kubectl run nginx --image=nginx  -l <label_name>=<label_value> --dry-run=client -o yaml    ## 
+kubectl run nginx --image=nginx  --labels=<label_name>=<label_value> --dry-run=client -o yaml
+
+kubectl explain pods --recursive | less   ## to browse the detailed yaml syntax of pods 
+
+kubectl explain pods --recursive | grep -A<n> <regexPattern> ##  To print <n> lines after <regexPattern>
+
+
+kubect get pods,svc,...  --all-namespaces
+
+kubectl get all --all-namespaces  ## To get all the resources 
+
+
+## Learn Imperative commands to create Service 
+kubectl create svc nodeport webapp-service --tcp=8080:8080  --dry-run=client -o yaml > websvc.yml 
+## Then update the yml with name , selector name 
+
+
+kubectl scale --replicas=<#> deployment <deployment-name>  --dry-run=client -o yaml OR
+Generate Deployment with 4 Replicas
+kubectl create deployment nginx --image=nginx --replicas=4  --dry-run=client -o yaml
+
+
+kubectl get deploy --namespace app-space  ## To get all applications deployed in app-space
+
+kubectl get deploy --all-namespaces  ## Get Apps across all namespaces
+
+kubectl get ingress --all-namespaces  ## To get ingress resources across all namespaces 
+
+kubectl edit ingress --namespace app-space  ## To edit an ingress resource 
+
+kubectl get deployments,svc  -n <namespace>  ## get all the details for deployments and services in namespace
+
+kubectl create cm nginx-configuration -n ingress-space ## Imperatively creating configMap 
+
+kubectl create sa nginx-serviceacount -n ingress-space ## Imperatively creating serviceacount 
+kubectl get pods -l <key>=<value>,....  Ex :- kubectl get pods -l name=internal
+
+Get PV -> PVC -> Pod use take PVC as input in Volume and add it to a path of volumeMounts
+
+Shortcuts 
+
+po for pods
+rs for Replicasets
+deploy for deployments
+svc for Services
+ns for Namespaces
+netpol for Network Policies 
+pv for PersistentVolume
+pvc for PersistentVolumeClaim
+sa for Service Account
+
+kubectl config set-context <cluster_name> --namspace=myns 
+
+kubect explain cronjob.spec.template --recursive
+
+kubectl run nginx --image=nginx  --> gives deployment
+kubectl run nginx --image=nginx  --restart=Never  --> gives pods
+kubectl run nginx --image=nginx  --restart=OnFailure   --> gives Jobs
+kubectl run nginx --image=nginx  --restart=OnFailure --schedule="*****"  --> gives cronjob
+
+Complex Example
+kubectl run nginx -image=nginx --restart=Never --port=80 --namespace=myname 
+--command --serviceaccount=mysa1 --env=HOSTNAME=local --labels=bu=finance,env=dev  
+--requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi'
+--dry-run=client -o yaml - /bin/sh -c 'echo hello world' > generate.yml
+
+
+--> Crearting a deployment
+kubectl run frontend --replicas=2 --labels=run=load-balancer-example --image=busybox  --port=8080
+--> Exposing the deployment as NodePort Service called "frontend-service"
+kubectl expose deployment frontend --type=NodePort --name=frontend-service --port=6262 --target-port=8080
+---> setting serviceaccount details for deployment
+kubectl set serviceaccount deployment frontend myuser
+kubectl create service clusterip my-cs --tcp=5678:8080 --dry-run -o yaml
+--> 

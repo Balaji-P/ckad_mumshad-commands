@@ -2,21 +2,21 @@ There are several ways to provide ENV variables in yml
 
 KEY VALUE PAIR WAY
     env:
-        - name: <name>
-          value: <val>
-          name: <name2>
-          value: <val2>
-          name: <name3>
-          value: <val3>
+    - name: <name>
+      value: <val>
+    - name: <name2>
+      value: <val2>
+    - name: <name3>
+      value: <val3>
 
 FROM CONFIGMAP
 
 env:
   - name: APP_COLOR
     valueFrom:
-        configMapKeyRef:
-           name: config-name
-           key: key-name  
+      configMapKeyRef:
+        name: config-name
+        key: key-name  
              
 
 

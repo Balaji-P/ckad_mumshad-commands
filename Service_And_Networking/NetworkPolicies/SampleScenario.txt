@@ -1,0 +1,100 @@
+## Pods and their ports 
+Api Pod 5000 , Web Pod 80 , DB Pod 3306 
+
+Api Pod connect DB Pod to run querry and fectch results 
+
+Goal is to Protect Db Pod and it gets Traffic only from Api Pod and only on port 3306 
+and with asumption that k8s  is Allow all for pods within cluster 
+
+So considering Things above we need ingress on DB Pod 
+We do not need egress form DB Pod to Api Pod becuase
+by default egress for the response gets enabled when ingress for the request was enabled.
+THOUGH THIS DOESNOT  EGRESS FOR  REQUEST  FROM DB POD to API POD is enabled
+
+
+Rule of Thumb , deciding on what type of Rule needs to created (ingrees / egress) 
+you only need to worry about the direction in whihc request originates and 
+no need to Worry about response 
+
+Below Allows Api Pod from the  namespace with prod label to make the request to DB Pod 
+## This is enabled by namespaceSelector
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-prod
+      namespaceSelector: ## Desried namespace has label prod 
+        matchLabels:     ##  
+          name: prod     ##
+    ports:
+    - protocol: TCP
+      port: 3306 
+
+Case 2 , Allow Traffic form any BackUp server to DB Pod 
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-prod
+      namespaceSelector: ## Desried namespace has label prod 
+        matchLabels:     ##  
+          name: prod     ##
+    - ipBlock:
+        cidr: 192.168.5.10/32 
+    ports:
+    - protocol: TCP
+      port: 3306 
+
+Case 3 , Allow Traffic to BackUp server outside cluster from DB  Pod 
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress 
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: api-prod
+      namespaceSelector: ## Desried namespace has label prod 
+        matchLabels:     ##  
+          name: prod     ##
+    ports:
+    - protocol: TCP
+      port: 3306     
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 192.168.5.10/32 
+    ports:
+    - protocol: TCP
+      port: 80

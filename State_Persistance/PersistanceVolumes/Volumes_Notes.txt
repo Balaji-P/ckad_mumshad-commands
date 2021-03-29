@@ -1,0 +1,34 @@
+To Persist Data Processed by Containers we attach a volume to Containers,
+So Data is Persisted even if Pod is ephemeral 
+
+Volume and Mounts 
+
+A Volume can be configured in different ways , like a directory on the host (host here is node )
+Once a volume is created we mount the volume to a directory inside the container using volumeMounts
+so as per below data-volume will be mounted at /opt inside container 
+
+volumes:
+- name: data-volume
+  hostpath:
+     path: /data
+     type: Directory
+
+volumeMounts:
+- mountPath: /opt
+  name: data-volume
+
+There various ways to configure volumes on the host , the above hostpath
+approach doesn't work in case of multinode cluster, since pods will assume /data path on all nodes to be same
+
+There are several types of storage solutions such as NFS, ceph , s3 , ...
+
+Many of these storage solutions are supported as well exp Amazon EBS.
+
+volumes:
+- name: data-volume
+  awsElasticBlockStore:
+    volumeID: <volume-id>
+    fsType: ext4
+
+
+

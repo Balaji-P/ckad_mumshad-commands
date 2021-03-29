@@ -1,0 +1,54 @@
+NodePort Service
+Listen to a request on NodePort and Fwd the request to POD
+
+ClusterIp Service 
+A Virtual Ip INSIDE the cluster to enable communication between different services 
+
+LoadBalancer Service
+Provision a LoadBalancer for  application in SUPPORTED Cloud Providers 
+
+NODEPORT Service Nuances 
+1. targetPort --> Port on pod 
+2. port --> Port on the Service
+3. clusterIp of the Service --> Service is like a virtual server insid the node 
+                                and has its own Ip in the cluster , 
+                                this IP is called ClusterIp of the Service 
+4. nodePort --> Port on the Node Valid Range [30000 , 32767]
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  type: NodePort 
+  ports:
+  - targetPort: 80
+    port: 80
+    nodePort: 30008
+  selector:     ## These contain labels of the Pods that needs to attached to this service 
+    app: myapp     
+    type: front-end 
+
+A service is pervasive across all nodes and could be accessed via 
+curl http://<node-ip>:<nodePort>
+
+
+CLUSTERIP Service
+To faciliate communication among a set of pods with other set of pods (frontend pods , backend pods)
+We need kubernetes service objects as they provide a commond static interface.
+This type of service is called clusterIp.
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: ClusterIp ## Default Service type 
+  ports:
+  - targetPort: 80  // Port on the pods where backend is exposed 
+    port: 80      // Port where service is exposed
+  selector:     ## These contain labels of the Pods that needs to attached to this service 
+    app: myapp     
+    type: front-end 

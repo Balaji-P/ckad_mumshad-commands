@@ -1,0 +1,43 @@
+
+
+kubectl edit ingress --namespace app-space <ingress-resource>
+
+kubectl -n <namespace> get ingress <ingress-resource> -o yaml > ingress.yaml        ## now edit this 
+
+
+kubectl get deployments,svc  -n <namespace>  ## get all the details for deployments and services in namespace
+
+rewrite-target annotation 
+
+apiVersion: extensions/v1beta1 ##  might have been updated to networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        backend:
+          serviceName: pay-service
+          servicePort: 8282
+
+FAQ - What is the rewrite-target option?
+
+Different ingress controllers have different options that can be used to customise the way it works. 
+NGINX Ingress controller has many options that can be seen here.
+
+Without the rewrite-target option, this is what would happen:
+
+http://<ingress-service>:<ingress-port>/watch --> http://<watch-service>:<port>/watch
+http://<ingress-service>:<ingress-port>/wear --> http://<wear-service>:<port>/wear
+
+To fix that we want to "ReWrite" the URL when the request is passed on to the watch 
+or wear applications. We don't want to pass in the same path that user typed in. 
+So we specify the rewrite-target option. 
+This rewrites the URL by replacing whatever is under rules->http->paths->path
+which happens to be /pay in this case with the value in rewrite-target. 
+This works just like a search and replace function.

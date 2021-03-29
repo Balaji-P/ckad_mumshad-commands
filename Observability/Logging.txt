@@ -1,6 +1,6 @@
-Kubectl logs -f <pod_name>
+Kubectl logs  <pod_name>
 
 Incase of multicontainer pod
 
-Kubectl logs -f <pod_name> <container_name>
+Kubectl logs  <pod_name> -c  <container_name>
 

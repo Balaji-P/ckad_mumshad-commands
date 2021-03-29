@@ -1,0 +1,61 @@
+Rollout and Versioning in a deployment 
+
+When a new Rollout is triggered  a new deployment revision is created as well 
+this helps us keep track of changes to our deployment and helps us rollback to previous 
+version of deployment 
+
+To update a deployment :-
+kubectl apply -f deployment-defintion.yaml 
+
+
+kubectl set image deployment/<deployment_name> <image_old>=<image_new> // This creates deployment with new config
+
+kubectl rollout status deployment/<deployment_name>  // Gives status of rollouts
+
+// To se revisions and history of rollouts 
+
+kubectl rollout history deployment/<deployment_name>   // Gives out the revisions and history of deployments
+
+
+
+There are 2 types of deployment strategies
+1. Recreate strategy --> Not Recommended , complete teardown and the Recreate
+2. Rolling Update --> Default strategy , replica set scaled down and brought up in stages 
+
+Kubectl describe deployment <deployment_name>  // Gives details on deployment strategy and events that  happened
+
+
+ROLLBACK 
+
+kubectl rollout undo deployment/<deployment_name> 
+
+Commands
+kubectl apply -f deployment-defintion.yaml // updating deployment
+kubectl set image deployment/<deployment_name> <image_old>=<image_new> // Carefull This creates deployment with new config
+kubectl rollout status deployment/<deployment_name>  // Gives status of rollout of the deployment_name
+kubectl rollout history deployment/<deployment_name>
+Kubectl describe deployment <deployment_name>
+
+// check the  revison concerned, if that revision when
+// was recorded using --record , the below command will give detailed output 
+kubectl rollout history deployment <deployment_name> --revision=1
+
+// We can use the --record flag to save the command used
+//  to create/update a deployment against the revision number.
+kubectl set image deployment nginx nginx=nginx:1.17 --record
+kubectl rollout history deployment nginx
+    deployment.extensions/nginx
+ 
+    REVISION CHANGE-CAUSE
+    1     <none>  // None becuase initial deployment didn't had --record=true
+    2     kubectl set image deployment nginx nginx=nginx:1.17 --record=true
+
+
+Lets now rollback to the previous revision:
+
+kubectl rollout undo deployment nginx
+   deployment.extensions/nginx rolled back
+
+rollout Undo add new revision after  deleting previous revision from history 
+ and running previous revision step as the last
+ 

@@ -1,0 +1,24 @@
+Read Volumes_Notes.txt 1st 
+
+With Use of Volumes, it can become maintennace headache across pods since an update in Volume
+will have to be refelcted in Pod Def yaml of all Pods.
+
+This can be solved when a set pool of volumes  are centrally managed by cluster administrator from
+which everyone can select  --> this is done via PV 
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+   name: pv-vol1
+spec:
+  accessModes:
+  - ReadWriteOnce / ReadOnlyMode / ReadWriteMany
+  capacity:
+    storage: 1Gi
+  hostpath:
+    path: /tmp/data
+
+
+
+

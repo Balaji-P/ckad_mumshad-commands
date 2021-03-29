@@ -1,0 +1,60 @@
+StateFul sets are similar to deployment ,  Lets Pods create in sequential Order 
+They assign predicatble name to the pods like <preifx>-<counter++>
+StateFul maintian a sticky identity for each of their pods a pod assigned one name will always 
+be assigned same name when it crashes 
+
+Yaml is same as deployments its just kind becomes "StatefulSet"
+and in spec: you need to specify "serviceName" --> Which will be same name as headless service
+
+Scaling up of Replicasets is done in increasing order:- 
+    mysql-0,  mysql-1 -> mysql-2 , mysql-3 ....
+and scaled down in reverse 
+    first mysql-3 , mysql-2 , mysql-1  , mysql-0
+
+Headless Services is needed in case of StatefulSet when you want to reach specific Pod
+like mysql master pod , since route to pods via ip or dns(a function of ip) is not possible since
+ips can change 
+    Solution is Headless Services, "  
+    to create a dns entry using  service like 
+    <pod_name><serviceName><namespace>.svc.cluster.local.
+
+How to create Headless Service 
+
+apiVersion: v1
+kind: Service
+metaData:
+  name: mysql-h
+spec:
+  port:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+
+StateFulSet spec template section 
+
+kind: StateFulSet
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql
+spec:
+  serviceName: mysql-h
+  replicas: 3
+  matchLabels:
+    app: mysql
+  template:
+    metadata:
+        name: myapp-pod
+        labels:
+          app: mysql
+    spec:
+     containers:
+     - name: nginx-containers
+       image: nginx  
+       ports:
+       - containerPort: 8080
+
+
+
+

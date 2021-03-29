@@ -1,0 +1,33 @@
+Read Volumes_Notes.txt 1st
+
+PVC are done to make the storage got from PV  available to a  node
+
+administrator creates a set of PVs and customers create PVCs 
+
+There is one to one mapping between claim and volume 
+
+Every PVC is bound to a single PV , k8s tries to find a PV that has sufficient capacity 
+as requested by the claim 
+
+If there are multiple possible Claims to PVs , then you can use labels and selectors to 
+bind to a right volume 
+
+When PVC is deleted what happens to underlying PV can be configured
+by default it is Reatin , or it can be set to Delete or Recycled 
+
+Recycled -> scrub of prev data and make PV available again 
+
+persistantVolumeclaimPolicy: Retain 
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi 
+
+  kubectl get persistantvolumeclaim 

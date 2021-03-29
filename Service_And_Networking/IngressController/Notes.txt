@@ -1,0 +1,76 @@
+Ingress 
+1. Helps users to access cluster via single externally accessible URL
+2. It provides ssl encryption
+3. It allows path and url based routing to underlying different services 
+4. Configuring Firewall Rules for each services
+
+Think of this  INGRESS as a L7 LoadBalancer built into k8s cluster that can be configured 
+using native k8s primitvies 
+
+Ingress you still need to make it accessible outside cluster using nodePort service or LoadBalancer service
+
+Ingress Controller is provided by 3rd parties like Ningx , HaProxy , traefik , istio  and is deployed as
+a Deployment in k8s cluster 
+
+Ingress Resources are configuration parameters in ymal
+
+Deployment of nignx controller requires Deployment of nginx and a Service to expose it and
+ConfigMap input nginx Configurations and ServiceAcount with proper privileges 
+
+INGRESS Controller Deployment yaml 
+
+apiVersion: extensions/v1beta1  ## might have been updated to networking.k8s.io/v1
+kind: Deployment
+metadata:
+ name: nginx-ingress-controller
+ spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nginx-ingress
+  template:
+    metadata:
+      labels:
+        name: nginx-ingress
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+            - /nginx-ingress-controller ## executable inside the image 
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+          - name: http
+            containerPort: 80
+          - name: https
+            containerPort: 443
+
+Exposing Ingress Controller with Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-Ingress
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+  selector:
+    name: nginx-ingress 
+    

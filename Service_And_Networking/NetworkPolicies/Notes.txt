@@ -1,0 +1,21 @@
+There are 2 type of Traffic Ingress and Egress 
+
+This type is defined as per the entity/componet  concerned in question 
+
+In incoming request will be ingress for recieving entity and egress sending entity
+
+K8s is by Default All Allow in terms of Network Security WITHIN THE CLUSTER
+Hence all pods can reach each other using Ips or Pod names or services configured for that purpose 
+
+Network Policy is like  a k8s Object attached to ONE/MORE  PODS
+  --> This is done using label and selectors 
+  --> Label the pods 
+      labels:
+        role: db 
+  --> Use the same in PodSelector of Network Policy
+      podSelector:
+        matchLabels:
+          role: db 
+  --> You can specify ingress and egress both in Network Policy
+     
+     

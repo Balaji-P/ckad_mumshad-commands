@@ -3,7 +3,7 @@
 
 Docker by default runs the processes as root user within  the container AS WELL AS  THE HOST 
   
-Docker conat can only see process running inside it 
+Docker can only see process running inside it 
 
 You can specfiy proccess to run as different user by specifying the userid  
 docker run --user=1000 ubuntu sleep 3600 

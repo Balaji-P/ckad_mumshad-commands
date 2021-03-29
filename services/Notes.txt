@@ -1,6 +1,22 @@
 kubectl get pods, svc --> gives both pods and services 
 // kubectl get resource1 , resource2 , resource3 .....
 
+Sample service yaml
+Service Yaml 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+
+---------------------
 
 Create a Service named redis-service of type ClusterIP to expose pod redis on port 6379
 
@@ -17,7 +33,7 @@ kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml
 
 Create a Service named nginx of type NodePort to expose pod nginx's port 80 on port 30080 on the nodes:
 
-kubectl expose pod nginx --port=80 --name nginx-service --type=NodePort --dry-run=client -o yaml
+kubectl expose pod nginx --port=80 --name nginx --type=NodePort --dry-run=client -o yaml
 
 (This will automatically use the pod's labels as selectors, but you cannot specify the node port. 
 You have to generate a definition file and then 
@@ -39,10 +55,19 @@ Kubernetes ServiceTypes allow you to specify what kind of Service you want. The 
 
 Type values and their behaviors are:
 
-1. ClusterIP: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. This is the default ServiceType.
-2. NodePort: Exposes the Service on each Node's IP at a static port (the NodePort). A ClusterIP Service, to which the NodePort Service routes, is automatically created. You'll be able to contact the NodePort Service, from outside the cluster, by requesting <NodeIP>:<NodePort>.
-3. LoadBalancer: Exposes the Service externally using a cloud provider's load balancer. NodePort and ClusterIP Services, to which the external load balancer routes, are automatically created.
-4. ExternalName: Maps the Service to the contents of the externalName field (e.g. foo.bar.example.com), by returning a CNAME record with its value. No proxying of any kind is set up.
+1. ClusterIP: Exposes the Service on a cluster-internal IP. 
+              Choosing this value makes the Service only reachable from within the cluster. 
+              It is used when you want a  service to be consumed within cluster 
+              This is the default ServiceType.
+2. NodePort: Exposes the Service on each Node's IP at a static port (the NodePort). 
+            A ClusterIP Service, to which the NodePort Service routes, is automatically created. 
+            You'll be able to contact the NodePort Service, 
+            from outside the cluster, by requesting <NodeIP>:<NodePort>.
+3. LoadBalancer: Exposes the Service externally using a cloud provider's load balancer. 
+                NodePort and ClusterIP Services, to which the external load balancer routes, 
+                are automatically created.
+4. ExternalName: Maps the Service to the contents of the externalName field (e.g. foo.bar.example.com),
+                 by returning a CNAME record with its value. No proxying of any kind is set up.
 
 
 ----------------------
@@ -52,3 +77,4 @@ Next, create a service of type ClusterIP by the same name (httpd).
 The target port for the service should be 80
 
 kubectl run httpd --image=httpd:alpine --port=80 --expose
+

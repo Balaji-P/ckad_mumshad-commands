@@ -1,0 +1,76 @@
+apiVersion: extensions/v1beta1  ## might have been updated to networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wear
+spec:
+  backend:
+    serviceName: wear-service
+    servicePort: 80 
+
+* Rules at the top for routing based on conditon like the target host  domain   
+* Within each rule you can route based on different paths 
+* Default Route works when none match 
+
+
+apiVersion: extensions/v1beta1  ## might have been updated to networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wear
+spec:
+ rules:
+ - host: wear.online-store.com 
+   http:
+     paths:
+     - backend:  
+         serviceName: wear
+         servicePort: 80
+- host: watch.online-store.com 
+   http:
+     paths:
+     - backend:  
+         serviceName: watch 
+         servicePort: 80
+
+
+Example Routing based on host and domain
+
+apiVersion: extensions/v1beta1   ## might have been updated to networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wear
+spec:
+ rules:
+ - host: wear.online-store.com 
+   http:
+     paths:   
+     - backend:  
+         serviceName: wear
+         servicePort: 80
+ - host: watch.online-store.com 
+   http:
+     paths:
+     - backend:  
+         serviceName: watch 
+         servicePort: 80
+
+Example Routing based on path 
+
+apiVersion: extensions/v1beta1    ## might have been updated to networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wear
+spec:
+ rules:
+ - host: wear.online-store.com 
+   http:
+     paths:
+     - path: /wear
+       backend:  
+         serviceName: wear
+         servicePort: 80
+     - path: /watch 
+       backend:  
+         serviceName: watch 
+         servicePort: 80
+
+    

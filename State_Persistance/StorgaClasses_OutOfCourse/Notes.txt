@@ -1,0 +1,58 @@
+kubectl get storageclass --all-namespaces
+kubectl get storageclasses --all-namespaces
+kubectl get sc --all-namespaces
+
+
+some storage provisioners like Google storage can automatically or Dynamically 
+provsion storage and attach it to Pod when a claim is made 
+
+This is called Dynamica Provision of Volumes, this acheived via
+storage class Option
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: google-storage
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
+  replication-type: none 
+
+type and replication-type is different for different provisioners 
+
+This Dynamic Provisioning via StorageClass remove the requirement for PV definition since PV or any associated
+storage will be created automatically when storageclass is created.
+
+In PVC we define StorageClass name , and it automatically Provisions storage for PVC
+(it internally creates PV its just that user doesn't have to bother about it)
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: google-storage  ## must in case of storageclass 
+  resources:
+    requests:
+      storage: 500Mi 
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: PodName
+spec:
+  containers:
+  - image: alpine
+    name: alpine
+    commmand: ["/bin/sh", "-c"]
+    args: ["shuf -i o-100 -n 1 >> /opt/randnumber.txt" ]
+    volumeMounts:
+    - mountPath: /opt
+      name: data-volume
+    volumes:
+    - name: data-volume
+      persistantVolumeClaim:
+        claimName: myclaim
